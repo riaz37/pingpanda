@@ -13,21 +13,35 @@ export const createCheckoutSession = async ({
   userEmail: string
   userId: string
 }) => {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price: "price_1QBHVBA19umTXGu8gzhUCSG7",
-        quantity: 1,
+  try {
+    console.log(`Creating checkout session for user ${userId} with email ${userEmail}`)
+    
+    const priceId = process.env.STRIPE_PRICE_ID
+    
+    if (!priceId) {
+      throw new Error("STRIPE_PRICE_ID is not defined in environment variables")
+    }
+    
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      mode: "subscription", // Changed from "payment" to "subscription"
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      customer_email: userEmail,
+      metadata: {
+        userId,
       },
-    ],
-    mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
-    customer_email: userEmail,
-    metadata: {
-      userId,
-    },
-  })
-
-  return session
+    })
+    
+    console.log(`Checkout session created: ${session.id}`)
+    return session
+  } catch (error) {
+    console.error("Error creating checkout session:", error instanceof Error ? error.message : String(error))
+    throw error
+  }
 }

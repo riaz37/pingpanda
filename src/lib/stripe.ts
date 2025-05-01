@@ -29,7 +29,7 @@ export const createCheckoutSession = async ({
           quantity: 1,
         },
       ],
-      mode: "subscription", // Changed from "payment" to "subscription"
+      mode: "payment", // Changed from "subscription" to "payment" for one-time purchase
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
       customer_email: userEmail,

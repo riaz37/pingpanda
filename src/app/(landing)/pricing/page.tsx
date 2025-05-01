@@ -15,7 +15,7 @@ const Page = () => {
   const router = useRouter()
 
   const INCLUDED_FEATURES = [
-    "10.000 real-time events per month",
+    "1.000 real-time events per month",
     "10 event categories",
     "Advanced analytics and insights",
     "Priority support",
